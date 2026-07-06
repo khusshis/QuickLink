@@ -1,12 +1,14 @@
 :root {
-  --bg-color: #0f1115;
-  --surface-color: #181b21;
-  --accent-color: #6366f1;
-  --text-primary: #e4e4e7;
-  --text-muted: #9ca3af;
+  --bg-color: #050505;
+  --surface-color: #0a0f0d;
+  --accent-color: #00ff41;
+  --text-primary: #00ff41;
+  --text-muted: #008f11;
+  --glitch-red: #ff003c;
+  --glitch-blue: #00e5ff;
   
-  --font-sans: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
-  --font-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+  --font-mono: "Fira Code", "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+  --font-sans: var(--font-mono); /* Force mono for hacker vibe */
 }
 
 * {
@@ -18,19 +20,25 @@
 body {
   background-color: var(--bg-color);
   color: var(--text-primary);
-  font-family: var(--font-sans);
+  font-family: var(--font-mono);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   line-height: 1.5;
+  /* subtle scanlines */
+  background-image: linear-gradient(rgba(0, 255, 65, 0.03) 1px, transparent 1px),
+  linear-gradient(90deg, rgba(0, 255, 65, 0.03) 1px, transparent 1px);
+  background-size: 20px 20px;
 }
 
 a {
   color: var(--accent-color);
   text-decoration: none;
+  text-shadow: 0 0 5px rgba(0, 255, 65, 0.5);
 }
 
 a:hover {
   text-decoration: underline;
+  text-shadow: 0 0 10px var(--accent-color);
 }
 
 .mono {
@@ -53,7 +61,9 @@ a:hover {
 
 h1, h2, h3 {
   margin-bottom: 0.5rem;
-  font-weight: 600;
+  font-weight: bold;
+  text-transform: uppercase;
+  letter-spacing: 2px;
 }
 
 p {
@@ -70,34 +80,47 @@ p {
 input {
   flex: 1;
   padding: 0.75rem 1rem;
-  background-color: var(--surface-color);
-  border: 1px solid #3f3f46;
-  border-radius: 8px;
+  background-color: transparent;
+  border: 1px solid var(--text-muted);
+  border-radius: 0;
   color: var(--text-primary);
-  font-family: var(--font-sans);
+  font-family: var(--font-mono);
   font-size: 1rem;
   outline: none;
-  transition: border-color 0.2s;
+  transition: all 0.2s;
+  box-shadow: inset 0 0 5px rgba(0, 255, 65, 0.1);
+}
+
+input::placeholder {
+  color: var(--text-muted);
+  opacity: 0.5;
 }
 
 input:focus {
   border-color: var(--accent-color);
+  box-shadow: 0 0 10px rgba(0, 255, 65, 0.3), inset 0 0 10px rgba(0, 255, 65, 0.2);
 }
 
 button {
-  background-color: var(--accent-color);
-  color: white;
-  border: none;
-  border-radius: 8px;
+  background-color: rgba(0, 255, 65, 0.1);
+  color: var(--accent-color);
+  border: 1px solid var(--accent-color);
+  border-radius: 0;
   padding: 0.75rem 1.5rem;
+  font-family: var(--font-mono);
   font-size: 1rem;
-  font-weight: 500;
+  font-weight: bold;
+  text-transform: uppercase;
   cursor: pointer;
-  transition: opacity 0.2s, transform 0.1s;
+  transition: all 0.2s;
+  position: relative;
+  overflow: hidden;
 }
 
 button:hover:not(:disabled) {
-  opacity: 0.9;
+  background-color: var(--accent-color);
+  color: #000;
+  box-shadow: 0 0 15px var(--accent-color);
 }
 
 button:active:not(:disabled) {
@@ -105,27 +128,52 @@ button:active:not(:disabled) {
 }
 
 button:disabled {
-  opacity: 0.6;
+  opacity: 0.4;
+  border-color: var(--text-muted);
+  color: var(--text-muted);
   cursor: not-allowed;
 }
 
 button.secondary {
   background-color: transparent;
-  border: 1px solid var(--accent-color);
-  color: var(--accent-color);
+  border: 1px dashed var(--text-muted);
+  color: var(--text-muted);
 }
 
 button.secondary:hover:not(:disabled) {
-  background-color: rgba(99, 102, 241, 0.1);
+  border-color: var(--accent-color);
+  color: var(--accent-color);
+  background-color: rgba(0, 255, 65, 0.05);
+  box-shadow: none;
 }
 
 /* Cards */
 .card {
-  background-color: var(--surface-color);
-  border: 1px solid #27272a;
-  border-radius: 12px;
+  background-color: rgba(10, 15, 13, 0.8);
+  border: 1px solid var(--accent-color);
+  border-radius: 0;
   padding: 1.5rem;
   margin-bottom: 1.5rem;
+  box-shadow: 0 0 10px rgba(0, 255, 65, 0.1);
+  position: relative;
+}
+
+.card::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0;
+  width: 10px; height: 10px;
+  border-top: 2px solid var(--accent-color);
+  border-left: 2px solid var(--accent-color);
+}
+
+.card::after {
+  content: '';
+  position: absolute;
+  bottom: 0; right: 0;
+  width: 10px; height: 10px;
+  border-bottom: 2px solid var(--accent-color);
+  border-right: 2px solid var(--accent-color);
 }
 
 .result-card {
@@ -139,9 +187,11 @@ button.secondary:hover:not(:disabled) {
 .pill {
   background-color: #000;
   padding: 0.5rem 1rem;
-  border-radius: 9999px;
+  border-radius: 0;
   font-size: 1.25rem;
-  border: 1px solid #27272a;
+  border: 1px dashed var(--accent-color);
+  color: var(--accent-color);
+  text-shadow: 0 0 5px var(--accent-color);
 }
 
 /* History List */
@@ -156,10 +206,15 @@ button.secondary:hover:not(:disabled) {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  background-color: var(--surface-color);
+  background-color: rgba(0, 255, 65, 0.02);
   padding: 1rem;
-  border-radius: 8px;
-  border: 1px solid #27272a;
+  border: 1px solid var(--text-muted);
+  transition: all 0.2s;
+}
+
+.history-item:hover {
+  border-color: var(--accent-color);
+  background-color: rgba(0, 255, 65, 0.05);
 }
 
 .history-item-left {
@@ -188,8 +243,7 @@ button.secondary:hover:not(:disabled) {
   text-align: center;
   color: var(--text-muted);
   padding: 2rem;
-  border: 1px dashed #3f3f46;
-  border-radius: 8px;
+  border: 1px dashed var(--text-muted);
 }
 
 /* Stats Page Layout */
@@ -205,38 +259,42 @@ button.secondary:hover:not(:disabled) {
 }
 
 .stat-box {
-  background-color: var(--surface-color);
+  background-color: rgba(10, 15, 13, 0.8);
   padding: 1.5rem;
-  border-radius: 12px;
-  border: 1px solid #27272a;
+  border: 1px solid var(--text-muted);
   text-align: center;
+  transition: border-color 0.2s;
+}
+
+.stat-box:hover {
+  border-color: var(--accent-color);
 }
 
 .stat-box .label {
   color: var(--text-muted);
   font-size: 0.875rem;
   margin-bottom: 0.5rem;
+  text-transform: uppercase;
 }
 
 .stat-box .value {
   font-size: 2rem;
-  font-weight: 600;
-  color: var(--text-primary);
+  font-weight: bold;
+  color: var(--accent-color);
+  text-shadow: 0 0 10px rgba(0, 255, 65, 0.5);
 }
 
 .chart-container {
-  background-color: var(--surface-color);
+  background-color: rgba(10, 15, 13, 0.8);
   padding: 1.5rem;
-  border-radius: 12px;
-  border: 1px solid #27272a;
+  border: 1px solid var(--text-muted);
   margin-bottom: 2rem;
   height: 300px;
 }
 
 .table-container {
-  background-color: var(--surface-color);
-  border-radius: 12px;
-  border: 1px solid #27272a;
+  background-color: rgba(10, 15, 13, 0.8);
+  border: 1px solid var(--text-muted);
   overflow: hidden;
 }
 
@@ -248,14 +306,15 @@ table {
 th, td {
   padding: 1rem;
   text-align: left;
-  border-bottom: 1px solid #27272a;
+  border-bottom: 1px dashed var(--text-muted);
 }
 
 th {
-  background-color: rgba(0,0,0,0.2);
-  color: var(--text-muted);
-  font-weight: 500;
+  background-color: rgba(0, 255, 65, 0.1);
+  color: var(--accent-color);
+  text-transform: uppercase;
   font-size: 0.875rem;
+  letter-spacing: 1px;
 }
 
 tr:last-child td {
@@ -272,24 +331,160 @@ tr:last-child td {
 }
 
 .error-text {
-  color: #ef4444;
+  color: var(--glitch-red);
   margin-top: -1.5rem;
   margin-bottom: 1.5rem;
   font-size: 0.875rem;
+  text-transform: uppercase;
+  text-shadow: 0 0 5px var(--glitch-red);
 }
 
 .spinner {
   display: inline-block;
   width: 20px;
   height: 20px;
-  border: 2px solid rgba(255,255,255,0.3);
+  border: 2px solid rgba(0,255,65,0.3);
+  border-top-color: var(--accent-color);
   border-radius: 50%;
-  border-top-color: white;
-  animation: spin 1s ease-in-out infinite;
+  animation: spin 1s linear infinite;
 }
 
 @keyframes spin {
   to { transform: rotate(360deg); }
+}
+
+/* --- Glitch Effects --- */
+.glitch {
+  position: relative;
+  display: inline-block;
+}
+
+.glitch::before,
+.glitch::after {
+  content: attr(data-text);
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: var(--bg-color);
+}
+
+.glitch::before {
+  left: 2px;
+  text-shadow: -2px 0 var(--glitch-red);
+  clip: rect(24px, 550px, 90px, 0);
+  animation: glitch-anim 3s infinite linear alternate-reverse;
+}
+
+.glitch::after {
+  left: -2px;
+  text-shadow: -2px 0 var(--glitch-blue);
+  clip: rect(85px, 550px, 140px, 0);
+  animation: glitch-anim 2.5s infinite linear alternate-reverse;
+}
+
+@keyframes glitch-anim {
+  0% {
+    clip: rect(27px, 9999px, 83px, 0);
+    transform: skew(0.2deg);
+  }
+  5% {
+    clip: rect(81px, 9999px, 52px, 0);
+    transform: skew(0.5deg);
+  }
+  10% {
+    clip: rect(10px, 9999px, 20px, 0);
+    transform: skew(0.1deg);
+  }
+  15% {
+    clip: rect(59px, 9999px, 7px, 0);
+    transform: skew(0.8deg);
+  }
+  20% {
+    clip: rect(74px, 9999px, 32px, 0);
+    transform: skew(0.3deg);
+  }
+  25% {
+    clip: rect(4px, 9999px, 55px, 0);
+    transform: skew(0.6deg);
+  }
+  30% {
+    clip: rect(98px, 9999px, 14px, 0);
+    transform: skew(0.1deg);
+  }
+  35% {
+    clip: rect(41px, 9999px, 63px, 0);
+    transform: skew(0.7deg);
+  }
+  40% {
+    clip: rect(22px, 9999px, 85px, 0);
+    transform: skew(0.4deg);
+  }
+  45% {
+    clip: rect(69px, 9999px, 3px, 0);
+    transform: skew(0.2deg);
+  }
+  50% {
+    clip: rect(15px, 9999px, 72px, 0);
+    transform: skew(0.9deg);
+  }
+  55% {
+    clip: rect(87px, 9999px, 29px, 0);
+    transform: skew(0.5deg);
+  }
+  60% {
+    clip: rect(53px, 9999px, 91px, 0);
+    transform: skew(0.1deg);
+  }
+  65% {
+    clip: rect(6px, 9999px, 47px, 0);
+    transform: skew(0.8deg);
+  }
+  70% {
+    clip: rect(38px, 9999px, 18px, 0);
+    transform: skew(0.3deg);
+  }
+  75% {
+    clip: rect(92px, 9999px, 76px, 0);
+    transform: skew(0.6deg);
+  }
+  80% {
+    clip: rect(11px, 9999px, 58px, 0);
+    transform: skew(0.2deg);
+  }
+  85% {
+    clip: rect(64px, 9999px, 8px, 0);
+    transform: skew(0.7deg);
+  }
+  90% {
+    clip: rect(45px, 9999px, 82px, 0);
+    transform: skew(0.4deg);
+  }
+  95% {
+    clip: rect(78px, 9999px, 35px, 0);
+    transform: skew(0.9deg);
+  }
+  100% {
+    clip: rect(2px, 9999px, 61px, 0);
+    transform: skew(0.5deg);
+  }
+}
+
+/* Terminal Cursor Effect */
+.cursor {
+  display: inline-block;
+  width: 10px;
+  height: 1em;
+  background-color: var(--accent-color);
+  animation: blink 1s step-end infinite;
+  vertical-align: middle;
+  margin-left: 5px;
+}
+
+@keyframes blink {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0; }
 }
 
 @media (max-width: 600px) {

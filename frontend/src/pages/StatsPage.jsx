@@ -95,7 +95,7 @@ function StatsPage() {
       <div className="stats-header card">
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', flexWrap: 'wrap', gap: '1rem' }}>
           <div>
-            <h1 className="mono" style={{ fontSize: '2rem', marginBottom: '0.25rem', color: 'var(--accent-color)' }}>
+            <h1 className="mono glitch" data-text={shortUrl} style={{ fontSize: '2rem', marginBottom: '0.25rem', color: 'var(--accent-color)' }}>
               {shortUrl}
             </h1>
             <p className="text-muted" style={{ margin: 0, wordBreak: 'break-all' }} title={data.originalUrl}>
@@ -136,14 +136,14 @@ function StatsPage() {
         ) : (
           <ResponsiveContainer width="100%" height="100%">
             <LineChart data={chartData}>
-              <CartesianGrid strokeDasharray="3 3" stroke="#27272a" />
-              <XAxis dataKey="date" stroke="#9ca3af" tick={{fill: '#9ca3af'}} />
-              <YAxis allowDecimals={false} stroke="#9ca3af" tick={{fill: '#9ca3af'}} />
+              <CartesianGrid strokeDasharray="3 3" stroke="var(--text-muted)" />
+              <XAxis dataKey="date" stroke="var(--text-muted)" tick={{fill: 'var(--text-muted)'}} />
+              <YAxis allowDecimals={false} stroke="var(--text-muted)" tick={{fill: 'var(--text-muted)'}} />
               <Tooltip 
-                contentStyle={{ backgroundColor: '#181b21', borderColor: '#27272a', color: '#e4e4e7' }}
-                itemStyle={{ color: '#6366f1' }}
+                contentStyle={{ backgroundColor: 'var(--surface-color)', borderColor: 'var(--accent-color)', color: 'var(--text-primary)' }}
+                itemStyle={{ color: 'var(--accent-color)' }}
               />
-              <Line type="monotone" dataKey="clicks" stroke="#6366f1" strokeWidth={3} dot={{ r: 4, fill: '#6366f1' }} />
+              <Line type="monotone" dataKey="clicks" stroke="var(--accent-color)" strokeWidth={3} dot={{ r: 4, fill: 'var(--accent-color)', stroke: 'var(--accent-color)' }} activeDot={{ r: 6, fill: '#000', stroke: 'var(--accent-color)', strokeWidth: 2 }} />
             </LineChart>
           </ResponsiveContainer>
         )}

@@ -70,8 +70,8 @@ function HomePage() {
   return (
     <div className="container home">
       <div className="text-center" style={{ marginBottom: '3rem' }}>
-        <h1>Shorten a link</h1>
-        <p className="text-muted">Create short, manageable URLs in seconds.</p>
+        <h1 className="glitch" data-text="Shorten a link">Shorten a link</h1>
+        <p className="text-muted">Create short, manageable URLs in seconds<span className="cursor"></span></p>
       </div>
 
       <form onSubmit={handleShorten}>
