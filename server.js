@@ -22,7 +22,7 @@ app.use('/api', apiRoutes);
 app.use(express.static(path.join(__dirname, 'frontend/dist')));
 
 // Handle React Router specific paths BEFORE the redirect routes catch them
-app.get(['/', '/stats/:code'], (req, res) => {
+app.get(['/', '/stats/:code', '/decrypt/:code'], (req, res) => {
   res.sendFile(path.join(__dirname, 'frontend/dist', 'index.html'));
 });
 

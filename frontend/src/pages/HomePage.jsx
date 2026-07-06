@@ -4,6 +4,7 @@ import { Link } from 'react-router-dom';
 function HomePage() {
   const [url, setUrl] = useState('');
   const [customCode, setCustomCode] = useState('');
+  const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [result, setResult] = useState(null);
@@ -41,7 +42,7 @@ function HomePage() {
         headers: {
           'Content-Type': 'application/json'
         },
-        body: JSON.stringify({ url, customCode: customCode.trim() || undefined })
+        body: JSON.stringify({ url, customCode: customCode.trim() || undefined, password: password || undefined })
       });
 
       const data = await res.json();
@@ -54,6 +55,7 @@ function HomePage() {
       saveToHistory(data);
       setUrl('');
       setCustomCode('');
+      setPassword('');
     } catch (err) {
       setError(err.message);
     } finally {
@@ -75,24 +77,35 @@ function HomePage() {
       </div>
 
       <form onSubmit={handleShorten}>
-        <div className="input-group">
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem', marginBottom: '2rem' }}>
           <input
             type="text"
             placeholder="Paste a long URL..."
             value={url}
             onChange={(e) => setUrl(e.target.value)}
             disabled={loading}
+            style={{ width: '100%' }}
           />
-          <input
-            type="text"
-            placeholder="Custom alias (optional)"
-            value={customCode}
-            onChange={(e) => setCustomCode(e.target.value)}
-            disabled={loading}
-            style={{ flex: '0.4' }}
-          />
-          <button type="submit" disabled={loading || !url.trim()}>
-            {loading ? <span className="spinner"></span> : 'Shorten'}
+          <div style={{ display: 'flex', gap: '1rem', flexWrap: 'wrap' }}>
+            <input
+              type="text"
+              placeholder="Custom alias (optional)"
+              value={customCode}
+              onChange={(e) => setCustomCode(e.target.value)}
+              disabled={loading}
+              style={{ flex: '1 1 200px' }}
+            />
+            <input
+              type="password"
+              placeholder="Password (optional)"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              disabled={loading}
+              style={{ flex: '1 1 200px' }}
+            />
+          </div>
+          <button type="submit" disabled={loading || !url.trim()} style={{ alignSelf: 'flex-start', padding: '1rem 2rem' }}>
+            {loading ? <span className="spinner"></span> : 'SHORTEN_LINK'}
           </button>
         </div>
         {error && <div className="error-text">{error}</div>}

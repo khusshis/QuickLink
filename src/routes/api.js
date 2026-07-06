@@ -57,8 +57,8 @@ router.post('/shorten', (req, res) => {
     }
 
     // Insert new link
-    const insert = db.prepare('INSERT INTO links (short_code, original_url) VALUES (?, ?)');
-    insert.run(shortCode, url);
+    const insert = db.prepare('INSERT INTO links (short_code, original_url, password) VALUES (?, ?, ?)');
+    insert.run(shortCode, url, req.body.password || null);
 
     // Use BASE_URL environment variable if set, otherwise fallback to the current host
     const baseUrl = process.env.BASE_URL || `${req.protocol}://${req.get('host')}`;
@@ -71,6 +71,38 @@ router.post('/shorten', (req, res) => {
     });
   } catch (error) {
     console.error('Error shortening URL:', error);
+    return res.status(500).json({ error: 'Internal server error.' });
+  }
+});
+
+// POST /api/decrypt/:code
+router.post('/decrypt/:code', (req, res) => {
+  try {
+    const { code } = req.params;
+    const { password } = req.body;
+
+    const link = db.prepare('SELECT id, original_url, password FROM links WHERE short_code = ?').get(code);
+
+    if (!link) {
+      return res.status(404).json({ error: 'Link not found.' });
+    }
+
+    if (link.password && link.password !== password) {
+      return res.status(401).json({ error: 'ACCESS DENIED: Incorrect password.' });
+    }
+
+    // Log the click now that they have successfully decrypted it
+    const referrer = req.get('Referer') || null;
+    const userAgent = req.get('User-Agent') || null;
+    try {
+      db.prepare('INSERT INTO clicks (link_id, referrer, user_agent) VALUES (?, ?, ?)').run(link.id, referrer, userAgent);
+    } catch (err) {
+      console.error('Error logging click:', err);
+    }
+
+    return res.json({ originalUrl: link.original_url });
+  } catch (error) {
+    console.error('Error decrypting link:', error);
     return res.status(500).json({ error: 'Internal server error.' });
   }
 });

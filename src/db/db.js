@@ -16,6 +16,7 @@ db.exec(`
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     short_code TEXT UNIQUE NOT NULL,
     original_url TEXT NOT NULL,
+    password TEXT,
     created_at DATETIME DEFAULT CURRENT_TIMESTAMP
   );
 
@@ -28,5 +29,11 @@ db.exec(`
     FOREIGN KEY(link_id) REFERENCES links(id)
   );
 `);
+
+try {
+  db.exec('ALTER TABLE links ADD COLUMN password TEXT');
+} catch (e) {
+  // Column likely already exists
+}
 
 export default db;

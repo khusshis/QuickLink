@@ -8,19 +8,21 @@ router.get('/:code', (req, res) => {
   try {
     const { code } = req.params;
 
-    const link = db.prepare('SELECT id, original_url FROM links WHERE short_code = ?').get(code);
+    const link = db.prepare('SELECT id, original_url, password FROM links WHERE short_code = ?').get(code);
 
     if (!link) {
       return res.status(404).send('Link not found');
     }
 
+    if (link.password) {
+      // It has a password, redirect to decrypt page
+      return res.redirect(302, `/decrypt/${code}`);
+    }
+
     const referrer = req.get('Referer') || null;
     const userAgent = req.get('User-Agent') || null;
 
-    // Asynchronously log the click (do not await or block the response)
-    // better-sqlite3 is synchronous, so it will briefly block the event loop, 
-    // but the prompt says "do not let it block or delay the redirect response"
-    // We can execute it after responding or in a setImmediate.
+    // Asynchronously log the click
     const logClick = () => {
       try {
         db.prepare('INSERT INTO clicks (link_id, referrer, user_agent) VALUES (?, ?, ?)').run(link.id, referrer, userAgent);
